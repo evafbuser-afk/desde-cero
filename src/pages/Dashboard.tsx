@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Logo } from '../components/Logo'
 import type { ProfileData, RoadmapDay, ResumeData } from '../lib/supabase'
+import type { Message } from '../lib/claude'
 import { CheckCircle2, Circle, Flame, Target, FileText, MessageCircle, ChevronRight, Send, Loader2 } from 'lucide-react'
 
 type Tab = 'today' | 'roadmap' | 'resume' | 'coach'
@@ -263,9 +264,9 @@ export function Dashboard() {
 }
 
 function CoachTab({ profile }: { profile: ProfileData | null }) {
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<Message[]>([
     {
-      role: 'assistant' as const,
+      role: 'assistant',
       content: profile
         ? `Hi! I'm your career coach. You're working toward becoming a ${profile.target_role}. What questions do you have? I'm here to help with job prep, skill advice, motivation — anything.`
         : "Hi! I'm your career coach. What can I help you with today?",

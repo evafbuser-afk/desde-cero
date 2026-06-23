@@ -97,7 +97,7 @@ export function Onboarding() {
         speak(reply, lang, () => {
           setSpeaking(false)
           // Auto-listen after AI finishes speaking
-          startVoiceInput([...newMessages, assistantMsg])
+          startVoiceInput()
         })
       }
     } catch {
@@ -108,7 +108,7 @@ export function Onboarding() {
     }
   }, [messages, loading, voiceMode, lang])
 
-  function startVoiceInput(currentMessages: Message[]) {
+  function startVoiceInput(_currentMessages?: Message[]) {
     if (buildingPlan) return
     setListening(true)
     setVoiceError(null)
@@ -132,7 +132,7 @@ export function Onboarding() {
       stopListeningRef.current?.()
       setListening(false)
     } else {
-      startVoiceInput(messages)
+      startVoiceInput()
     }
   }
 
