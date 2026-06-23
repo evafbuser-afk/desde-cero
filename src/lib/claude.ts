@@ -17,14 +17,22 @@ async function callClaude(params: {
   messages: Message[]
   max_tokens?: number
 }): Promise<string> {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  // In production, calls go through /api/claude (key stays on server).
+  // In dev, call Anthropic directly if a local key is set.
+  const isDev = import.meta.env.DEV
+  const localKey = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined
+
+  const url = isDev && localKey ? 'https://api.anthropic.com/v1/messages' : '/api/claude'
+  const headers: Record<string, string> = { 'content-type': 'application/json' }
+  if (isDev && localKey) {
+    headers['x-api-key'] = localKey
+    headers['anthropic-version'] = '2023-06-01'
+    headers['anthropic-dangerous-direct-browser-access'] = 'true'
+  }
+
+  const res = await fetch(url, {
     method: 'POST',
-    headers: {
-      'x-api-key': import.meta.env.VITE_ANTHROPIC_API_KEY as string,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers,
     body: JSON.stringify({
       model: MODEL,
       max_tokens: params.max_tokens ?? 1024,
