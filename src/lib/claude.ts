@@ -1,10 +1,11 @@
 import type { ProfileData, RoadmapDay, ResumeData } from './supabase'
 import type { SupportedLang } from './voice'
+import { getLanguage } from './languages'
 
-const LANG_INSTRUCTION: Record<SupportedLang, string> = {
-  en: 'Conduct this entire conversation in English.',
-  es: 'Conduce toda esta conversación en español. Responde siempre en español.',
-  tl: 'Isagawa ang buong pag-uusap na ito sa Tagalog. Sumagot palagi sa Tagalog.',
+function langInstruction(lang: SupportedLang): string {
+  const name = getLanguage(lang).name
+  if (name === 'English') return 'Conduct this entire conversation in English.'
+  return `Conduct this entire conversation in ${name}. Always respond in ${name}, using simple, clear, everyday words. If the user writes in another language, still respond in ${name}.`
 }
 
 // NOTE: In production, API calls must go through a backend proxy to protect the key.
@@ -81,11 +82,14 @@ When you receive 'ready', respond ONLY with valid JSON in this exact format (no 
 }`
 
 export async function sendOnboardingMessage(messages: Message[], lang: SupportedLang = 'en'): Promise<string> {
-  const system = ONBOARDING_SYSTEM_PROMPT + '\n\n' + LANG_INSTRUCTION[lang]
+  const system = ONBOARDING_SYSTEM_PROMPT + '\n\n' + langInstruction(lang)
   return callClaude({ system, messages })
 }
 
-export async function generateRoadmap(profile: ProfileData): Promise<RoadmapDay[]> {
+export async function generateRoadmap(
+  profile: ProfileData,
+  lang: SupportedLang = 'en',
+): Promise<RoadmapDay[]> {
   const text = await callClaude({
     max_tokens: 4096,
     messages: [
@@ -105,7 +109,7 @@ Profile:
 Return ONLY a JSON array (no markdown) of 30 objects with this shape:
 {"day":1,"topic":"short topic","description":"1-2 sentence description","duration_minutes":20,"type":"lesson","skill_category":"category","completed":false}
 
-Valid types: lesson, practice, quiz, project. Make it realistic and progressive.`,
+Valid types: lesson, practice, quiz, project (keep these type values in English). Write the "topic", "description", and "skill_category" values in ${getLanguage(lang).name}. Make it realistic and progressive.`,
       },
     ],
   })
@@ -115,7 +119,10 @@ Valid types: lesson, practice, quiz, project. Make it realistic and progressive.
   return JSON.parse(jsonMatch[0])
 }
 
-export async function generateResume(profile: ProfileData): Promise<ResumeData> {
+export async function generateResume(
+  profile: ProfileData,
+  lang: SupportedLang = 'en',
+): Promise<ResumeData> {
   const text = await callClaude({
     messages: [
       {
@@ -127,7 +134,7 @@ Education: ${profile.education_level}
 Work situation: ${profile.work_situation}
 Goals: ${profile.goals}
 
-Return ONLY JSON (no markdown):
+Write all text values in ${getLanguage(lang).name}. Return ONLY JSON (no markdown):
 {"summary":"2-3 sentence professional summary","skills":["skill1","skill2"],"experience":["transferable experience bullet"],"education":"education description","target_role":"the target role"}`,
       },
     ],
@@ -135,6 +142,34 @@ Return ONLY JSON (no markdown):
 
   const jsonMatch = text.match(/\{[\s\S]*\}/)
   if (!jsonMatch) throw new Error('Failed to parse resume JSON')
+  return JSON.parse(jsonMatch[0])
+}
+
+// Translate the UI string dictionary into any language (used for languages without a built-in dict).
+export async function translateUiStrings(
+  langName: string,
+  englishDict: object,
+): Promise<Record<string, unknown>> {
+  const text = await callClaude({
+    max_tokens: 4096,
+    messages: [
+      {
+        role: 'user',
+        content: `Translate all the string VALUES in this JSON object into ${langName}. Rules:
+- Keep every key exactly the same.
+- Keep the JSON structure identical (same arrays/objects).
+- Keep any placeholder like {email} unchanged.
+- Keep emoji unchanged.
+- Use simple, clear, everyday words a beginner would understand.
+Return ONLY the JSON, no markdown, no explanation.
+
+${JSON.stringify(englishDict)}`,
+      },
+    ],
+  })
+
+  const jsonMatch = text.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) throw new Error('Failed to parse translation JSON')
   return JSON.parse(jsonMatch[0])
 }
 
@@ -152,7 +187,7 @@ Their goals: ${profile.goals || 'building a better future'}
 
 Be warm, specific, and actionable. Keep responses concise (3-5 sentences max). Speak simply and clearly.
 
-${LANG_INSTRUCTION[lang]}`
+${langInstruction(lang)}`
 
   return callClaude({ system, messages, max_tokens: 512 })
 }

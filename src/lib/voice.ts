@@ -1,18 +1,17 @@
-// Browser Web Speech API — no external service needed
+import { getLanguage } from './languages'
 
-export type SupportedLang = 'en' | 'es' | 'tl'
+// A language is identified by its BCP-47 code (e.g. 'en', 'es', 'tl', 'zh', ...)
+export type SupportedLang = string
 
-export const LANG_CONFIG: Record<SupportedLang, { label: string; speechLang: string; name: string }> = {
-  en: { label: 'English', speechLang: 'en-US', name: 'English' },
-  es: { label: 'Español', speechLang: 'es-US', name: 'Spanish' },
-  tl: { label: 'Tagalog', speechLang: 'fil-PH', name: 'Tagalog' },
+function speechCode(lang: SupportedLang): string {
+  return getLanguage(lang).speech
 }
 
 // Text-to-speech
 export function speak(text: string, lang: SupportedLang, onEnd?: () => void) {
   window.speechSynthesis.cancel()
   const utterance = new SpeechSynthesisUtterance(cleanForSpeech(text))
-  utterance.lang = LANG_CONFIG[lang].speechLang
+  utterance.lang = speechCode(lang)
   utterance.rate = 0.95
   utterance.pitch = 1.05
   if (onEnd) utterance.onend = onEnd
@@ -40,7 +39,7 @@ export function startListening(
   lang: SupportedLang,
   onResult: RecognitionCallback,
   onError: (err: string) => void,
-): (() => void) {
+): () => void {
   const SpeechRecognition =
     (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
 
@@ -50,16 +49,14 @@ export function startListening(
   }
 
   const recognition = new SpeechRecognition()
-  recognition.lang = LANG_CONFIG[lang].speechLang
+  recognition.lang = speechCode(lang)
   recognition.interimResults = false
   recognition.maxAlternatives = 1
   recognition.continuous = false
 
   recognition.onresult = (event: any) => {
-    const transcript = event.results[0][0].transcript
-    onResult(transcript)
+    onResult(event.results[0][0].transcript)
   }
-
   recognition.onerror = (event: any) => {
     if (event.error !== 'aborted') onError(event.error)
   }

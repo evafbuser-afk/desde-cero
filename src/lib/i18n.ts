@@ -1,6 +1,4 @@
-import type { SupportedLang } from './voice'
-
-type Dict = {
+export type Dict = {
   nav_signin: string
   hero_badge: string
   hero_title_1: string
@@ -30,9 +28,18 @@ type Dict = {
   auth_sent_spam: string
   auth_different: string
   auth_back: string
+  interview_label: string
+  onboarding_greeting: string
+  building_plan: string
+  voice_turn_on: string
+  voice_on: string
+  voice_listening: string
+  voice_speaking: string
+  voice_hint: string
+  input_placeholder: string
 }
 
-export const T: Record<SupportedLang, Dict> = {
+export const T: Record<string, Dict> = {
   en: {
     nav_signin: 'Sign in',
     hero_badge: 'Your career journey starts here',
@@ -74,6 +81,16 @@ export const T: Record<SupportedLang, Dict> = {
     auth_sent_spam: 'Don\'t see it? Check your spam folder, or wait a minute and try again.',
     auth_different: 'Use a different email',
     auth_back: 'Back to home',
+    interview_label: 'Personalized interview',
+    onboarding_greeting:
+      "Hi! I'm so glad you're here. I'm your personal career coach, and I'm going to help you build a plan that fits your life.\n\nLet's start simple — what's your name, and can you tell me a little about yourself?",
+    building_plan: '✨ I have everything I need! Building your personalized 30-day roadmap now...',
+    voice_turn_on: 'Turn on voice',
+    voice_on: 'Voice mode: ON',
+    voice_listening: 'Listening...',
+    voice_speaking: 'Coach is speaking...',
+    voice_hint: 'Voice mode — tap the mic to speak',
+    input_placeholder: 'Type your message...',
   },
   es: {
     nav_signin: 'Iniciar sesión',
@@ -116,6 +133,16 @@ export const T: Record<SupportedLang, Dict> = {
     auth_sent_spam: '¿No lo ves? Revisa tu carpeta de spam o espera un minuto e inténtalo de nuevo.',
     auth_different: 'Usar otro correo',
     auth_back: 'Volver al inicio',
+    interview_label: 'Entrevista personalizada',
+    onboarding_greeting:
+      '¡Hola! Me alegra mucho que estés aquí. Soy tu coach de carrera personal y voy a ayudarte a construir un plan que se adapte a tu vida.\n\nEmpecemos simple — ¿cuál es tu nombre y puedes contarme un poco sobre ti?',
+    building_plan: '✨ ¡Tengo todo lo que necesito! Construyendo tu plan personalizado de 30 días...',
+    voice_turn_on: 'Activar voz',
+    voice_on: 'Modo de voz: ON',
+    voice_listening: 'Escuchando...',
+    voice_speaking: 'El coach está hablando...',
+    voice_hint: 'Modo de voz — toca el micrófono para hablar',
+    input_placeholder: 'Escribe tu mensaje...',
   },
   tl: {
     nav_signin: 'Mag-sign in',
@@ -158,5 +185,19 @@ export const T: Record<SupportedLang, Dict> = {
     auth_sent_spam: 'Hindi mo makita? Tingnan ang spam folder, o maghintay ng isang minuto at subukan muli.',
     auth_different: 'Gumamit ng ibang email',
     auth_back: 'Bumalik sa simula',
+    interview_label: 'Personal na panayam',
+    onboarding_greeting:
+      'Kumusta! Natutuwa akong narito ka. Ako ang iyong personal na career coach at tutulungan kitang bumuo ng plano na angkop sa iyong buhay.\n\nSimulan natin nang simple — ano ang iyong pangalan, at maaari mo bang ikuwento ang kaunti tungkol sa iyong sarili?',
+    building_plan: '✨ Mayroon na akong lahat ng kailangan ko! Ginagawa na ang iyong 30-araw na roadmap...',
+    voice_turn_on: 'I-on ang boses',
+    voice_on: 'Mode ng boses: ON',
+    voice_listening: 'Nakikinig...',
+    voice_speaking: 'Nagsasalita ang AI...',
+    voice_hint: 'Mode ng boses — i-tap ang mikropono para magsalita',
+    input_placeholder: 'I-type ang iyong mensahe...',
   },
 }
+
+// English is the source of truth for on-the-fly translation into any other language.
+export const BASE_DICT: Dict = T.en
+

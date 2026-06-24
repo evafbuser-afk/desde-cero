@@ -3,15 +3,13 @@ import { Logo } from '../components/Logo'
 import { LangSwitcher } from '../components/LangSwitcher'
 import { Storyboard } from '../components/Storyboard'
 import { useLang } from '../lib/lang'
-import { T } from '../lib/i18n'
 import { Sparkles, Clock, FileText, TrendingUp } from 'lucide-react'
 
 const icons = [Sparkles, Clock, TrendingUp, FileText]
 
 export function Landing() {
   const navigate = useNavigate()
-  const { lang } = useLang()
-  const t = T[lang]
+  const { t } = useLang()
 
   return (
     <div className="min-h-screen bg-white">

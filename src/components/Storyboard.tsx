@@ -1,6 +1,5 @@
 import { MessageCircle, Map, GraduationCap, Briefcase, ArrowRight } from 'lucide-react'
 import { useLang } from '../lib/lang'
-import { T } from '../lib/i18n'
 
 const meta = [
   { icon: MessageCircle, accent: 'lime' },
@@ -15,8 +14,7 @@ const accentMap: Record<string, { bg: string; text: string; ring: string }> = {
 }
 
 export function Storyboard() {
-  const { lang } = useLang()
-  const t = T[lang]
+  const { t } = useLang()
 
   return (
     <section className="max-w-5xl mx-auto px-6 py-16">

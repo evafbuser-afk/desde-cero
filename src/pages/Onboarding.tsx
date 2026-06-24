@@ -9,34 +9,12 @@ import { supabase } from '../lib/supabase'
 import type { ProfileData } from '../lib/supabase'
 import { Send, Mic, MicOff, Volume2, VolumeX, Loader2 } from 'lucide-react'
 
-const INITIAL_MESSAGE: Message = {
-  role: 'assistant',
-  content:
-    "Hi! I'm so glad you're here. I'm your personal career coach, and I'm going to help you build a plan that fits your life.\n\nLet's start simple — what's your name, and can you tell me a little about yourself?",
-}
-
-const INITIAL_MESSAGE_ES: Message = {
-  role: 'assistant',
-  content:
-    '¡Hola! Me alegra mucho que estés aquí. Soy tu coach de carrera personal y voy a ayudarte a construir un plan que se adapte a tu vida.\n\nEmpecemos simple — ¿cuál es tu nombre y puedes contarme un poco sobre ti?',
-}
-
-const INITIAL_MESSAGE_TL: Message = {
-  role: 'assistant',
-  content:
-    'Kumusta! Natutuwa akong narito ka. Ako ang iyong personal na career coach at tutulungan kitang bumuo ng plano na angkop sa iyong buhay.\n\nSimulan natin nang simple — ano ang iyong pangalan, at maaari mo bang ikuwento ang kaunti tungkol sa iyong sarili?',
-}
-
-const INITIAL_MESSAGES: Record<string, Message> = {
-  en: INITIAL_MESSAGE,
-  es: INITIAL_MESSAGE_ES,
-  tl: INITIAL_MESSAGE_TL,
-}
-
 export function Onboarding() {
   const navigate = useNavigate()
-  const { lang } = useLang()
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGES[lang]])
+  const { lang, t } = useLang()
+  const [messages, setMessages] = useState<Message[]>([
+    { role: 'assistant', content: t.onboarding_greeting },
+  ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [buildingPlan, setBuildingPlan] = useState(false)
@@ -64,10 +42,12 @@ export function Onboarding() {
     }
   }, [voiceMode])
 
-  // Update initial message when language changes
+  // Update initial message when language changes (only before the conversation starts)
   useEffect(() => {
-    setMessages([INITIAL_MESSAGES[lang]])
-  }, [lang])
+    setMessages((prev) =>
+      prev.length === 1 ? [{ role: 'assistant', content: t.onboarding_greeting }] : prev,
+    )
+  }, [lang, t.onboarding_greeting])
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading) return
@@ -141,17 +121,13 @@ export function Onboarding() {
     setLoading(false)
     stopSpeaking()
 
-    const buildingText =
-      lang === 'tl'
-        ? '✨ Mayroon na akong lahat ng kailangan ko! Ginagawa na ang iyong 30-araw na roadmap...'
-        : lang === 'es'
-        ? '✨ ¡Tengo todo lo que necesito! Construyendo tu plan personalizado de 30 días...'
-        : '✨ I have everything I need! Building your personalized 30-day roadmap now...'
-
-    setMessages((prev) => [...prev, { role: 'assistant', content: buildingText }])
+    setMessages((prev) => [...prev, { role: 'assistant', content: t.building_plan }])
 
     try {
-      const [roadmap, resume] = await Promise.all([generateRoadmap(profile), generateResume(profile)])
+      const [roadmap, resume] = await Promise.all([
+        generateRoadmap(profile, lang),
+        generateResume(profile, lang),
+      ])
 
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
@@ -191,9 +167,7 @@ export function Onboarding() {
       <header className="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Logo size="sm" />
-          <span className="text-sm text-gray-400">
-            {lang === 'tl' ? 'Personal na panayam' : lang === 'es' ? 'Entrevista personalizada' : 'Personalized interview'}
-          </span>
+          <span className="text-sm text-gray-400">{t.interview_label}</span>
         </div>
         <LangSwitcher />
       </header>
@@ -206,17 +180,17 @@ export function Onboarding() {
           {listening ? (
             <>
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              {lang === 'tl' ? 'Nakikinig...' : lang === 'es' ? 'Escuchando...' : 'Listening...'}
+              {t.voice_listening}
             </>
           ) : speaking ? (
             <>
               <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-              {lang === 'tl' ? 'Nagsasalita ang AI...' : lang === 'es' ? 'El coach está hablando...' : 'Coach is speaking...'}
+              {t.voice_speaking}
             </>
           ) : (
             <>
               <span className="w-2 h-2 rounded-full bg-lime-500" />
-              {lang === 'tl' ? 'Mode ng boses — i-tap ang mikropono para magsalita' : lang === 'es' ? 'Modo de voz — toca el micrófono para hablar' : 'Voice mode — tap the mic to speak'}
+              {t.voice_hint}
             </>
           )}
         </div>
@@ -259,9 +233,7 @@ export function Onboarding() {
                 <div className="w-12 h-12 rounded-2xl bg-teal-100 flex items-center justify-center">
                   <Loader2 size={24} className="text-teal-600 animate-spin" />
                 </div>
-                <p className="text-sm text-gray-500 font-medium">
-                  {lang === 'tl' ? 'Ginagawa ang iyong plano...' : lang === 'es' ? 'Construyendo tu plan...' : 'Building your personalized plan...'}
-                </p>
+                <p className="text-sm text-gray-500 font-medium">{t.building_plan}</p>
               </div>
             </div>
           )}
@@ -291,9 +263,7 @@ export function Onboarding() {
                 }`}
               >
                 {voiceMode ? <Volume2 size={13} /> : <VolumeX size={13} />}
-                {voiceMode
-                  ? (lang === 'tl' ? 'Mode ng boses: ON' : lang === 'es' ? 'Modo de voz: ON' : 'Voice mode: ON')
-                  : (lang === 'tl' ? 'I-on ang boses' : lang === 'es' ? 'Activar voz' : 'Turn on voice')}
+                {voiceMode ? t.voice_on : t.voice_turn_on}
               </button>
             </div>
           )}
@@ -303,11 +273,7 @@ export function Onboarding() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={
-                lang === 'tl' ? 'I-type ang iyong mensahe...' :
-                lang === 'es' ? 'Escribe tu mensaje...' :
-                'Type your message...'
-              }
+              placeholder={t.input_placeholder}
               disabled={loading || buildingPlan || listening}
               className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:bg-gray-50"
             />

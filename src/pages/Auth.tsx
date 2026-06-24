@@ -3,13 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { Logo } from '../components/Logo'
 import { sendMagicLink } from '../lib/auth'
 import { useLang } from '../lib/lang'
-import { T } from '../lib/i18n'
 import { ArrowLeft, Mail, MailCheck } from 'lucide-react'
 
 export function Auth() {
   const navigate = useNavigate()
-  const { lang } = useLang()
-  const t = T[lang]
+  const { t } = useLang()
   const [step, setStep] = useState<'email' | 'sent'>('email')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)

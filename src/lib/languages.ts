@@ -1,0 +1,51 @@
+// BCP-47 code, English name, native name. `speech` is used for voice (SpeechRecognition/SpeechSynthesis).
+export type Language = { code: string; name: string; native: string; speech: string }
+
+export const LANGUAGES: Language[] = [
+  { code: 'en', name: 'English', native: 'English', speech: 'en-US' },
+  { code: 'es', name: 'Spanish', native: 'Español', speech: 'es-US' },
+  { code: 'tl', name: 'Tagalog', native: 'Tagalog', speech: 'fil-PH' },
+  { code: 'zh', name: 'Chinese (Mandarin)', native: '中文', speech: 'zh-CN' },
+  { code: 'hi', name: 'Hindi', native: 'हिन्दी', speech: 'hi-IN' },
+  { code: 'ar', name: 'Arabic', native: 'العربية', speech: 'ar-SA' },
+  { code: 'fr', name: 'French', native: 'Français', speech: 'fr-FR' },
+  { code: 'pt', name: 'Portuguese', native: 'Português', speech: 'pt-BR' },
+  { code: 'bn', name: 'Bengali', native: 'বাংলা', speech: 'bn-BD' },
+  { code: 'ru', name: 'Russian', native: 'Русский', speech: 'ru-RU' },
+  { code: 'ur', name: 'Urdu', native: 'اردو', speech: 'ur-PK' },
+  { code: 'id', name: 'Indonesian', native: 'Bahasa Indonesia', speech: 'id-ID' },
+  { code: 'de', name: 'German', native: 'Deutsch', speech: 'de-DE' },
+  { code: 'ja', name: 'Japanese', native: '日本語', speech: 'ja-JP' },
+  { code: 'sw', name: 'Swahili', native: 'Kiswahili', speech: 'sw-KE' },
+  { code: 'mr', name: 'Marathi', native: 'मराठी', speech: 'mr-IN' },
+  { code: 'te', name: 'Telugu', native: 'తెలుగు', speech: 'te-IN' },
+  { code: 'tr', name: 'Turkish', native: 'Türkçe', speech: 'tr-TR' },
+  { code: 'ta', name: 'Tamil', native: 'தமிழ்', speech: 'ta-IN' },
+  { code: 'vi', name: 'Vietnamese', native: 'Tiếng Việt', speech: 'vi-VN' },
+  { code: 'ko', name: 'Korean', native: '한국어', speech: 'ko-KR' },
+  { code: 'it', name: 'Italian', native: 'Italiano', speech: 'it-IT' },
+  { code: 'th', name: 'Thai', native: 'ไทย', speech: 'th-TH' },
+  { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી', speech: 'gu-IN' },
+  { code: 'pl', name: 'Polish', native: 'Polski', speech: 'pl-PL' },
+  { code: 'uk', name: 'Ukrainian', native: 'Українська', speech: 'uk-UA' },
+  { code: 'fa', name: 'Persian', native: 'فارسی', speech: 'fa-IR' },
+  { code: 'ms', name: 'Malay', native: 'Bahasa Melayu', speech: 'ms-MY' },
+  { code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ', speech: 'pa-IN' },
+  { code: 'ceb', name: 'Cebuano', native: 'Cebuano', speech: 'fil-PH' },
+  { code: 'ha', name: 'Hausa', native: 'Hausa', speech: 'ha-NG' },
+  { code: 'yo', name: 'Yoruba', native: 'Yorùbá', speech: 'yo-NG' },
+  { code: 'ig', name: 'Igbo', native: 'Igbo', speech: 'ig-NG' },
+  { code: 'am', name: 'Amharic', native: 'አማርኛ', speech: 'am-ET' },
+  { code: 'ne', name: 'Nepali', native: 'नेपाली', speech: 'ne-NP' },
+  { code: 'si', name: 'Sinhala', native: 'සිංහල', speech: 'si-LK' },
+  { code: 'km', name: 'Khmer', native: 'ខ្មែរ', speech: 'km-KH' },
+  { code: 'el', name: 'Greek', native: 'Ελληνικά', speech: 'el-GR' },
+  { code: 'nl', name: 'Dutch', native: 'Nederlands', speech: 'nl-NL' },
+  { code: 'ht', name: 'Haitian Creole', native: 'Kreyòl Ayisyen', speech: 'fr-FR' },
+  { code: 'ro', name: 'Romanian', native: 'Română', speech: 'ro-RO' },
+  { code: 'so', name: 'Somali', native: 'Soomaali', speech: 'so-SO' },
+]
+
+export function getLanguage(code: string): Language {
+  return LANGUAGES.find((l) => l.code === code) ?? LANGUAGES[0]
+}
