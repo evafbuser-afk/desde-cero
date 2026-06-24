@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Logo } from '../components/Logo'
 import { LangSwitcher } from '../components/LangSwitcher'
+import { Storyboard } from '../components/Storyboard'
 import { Sparkles, Clock, FileText, TrendingUp } from 'lucide-react'
 
 const features = [
@@ -67,6 +68,11 @@ export function Landing() {
         </button>
         <p className="text-sm text-gray-400 mt-3">Just your phone number to get started</p>
       </section>
+
+      {/* Storyboard — how it works */}
+      <div className="bg-gray-50 border-y border-gray-100">
+        <Storyboard />
+      </div>
 
       {/* Features */}
       <section className="max-w-4xl mx-auto px-6 pb-24">

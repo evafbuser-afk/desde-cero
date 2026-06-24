@@ -2,22 +2,27 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Logo } from '../components/Logo'
 import { sendOTP, verifyOTP } from '../lib/auth'
-import { ArrowLeft, Phone, Shield } from 'lucide-react'
+import { COUNTRIES } from '../lib/countries'
+import { ArrowLeft, Phone, Shield, ChevronDown } from 'lucide-react'
 
 export function Auth() {
   const navigate = useNavigate()
   const [step, setStep] = useState<'phone' | 'otp'>('phone')
+  const [country, setCountry] = useState(COUNTRIES[0])
   const [phone, setPhone] = useState('')
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  function fullNumber() {
+    return `${country.dial}${phone.replace(/\D/g, '')}`
+  }
+
   async function handleSendOTP(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     setLoading(true)
-    const formatted = phone.startsWith('+') ? phone : `+1${phone.replace(/\D/g, '')}`
-    const { error } = await sendOTP(formatted)
+    const { error } = await sendOTP(fullNumber())
     setLoading(false)
     if (error) {
       setError(error)
@@ -30,8 +35,7 @@ export function Auth() {
     e.preventDefault()
     setError(null)
     setLoading(true)
-    const formatted = phone.startsWith('+') ? phone : `+1${phone.replace(/\D/g, '')}`
-    const { error } = await verifyOTP(formatted, otp)
+    const { error } = await verifyOTP(fullNumber(), otp)
     setLoading(false)
     if (error) {
       setError(error)
@@ -61,14 +65,44 @@ export function Auth() {
                 </div>
               </div>
 
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="(555) 000-0000"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                required
-              />
+              <div className="flex gap-2">
+                {/* Country selector */}
+                <div className="relative shrink-0">
+                  <select
+                    value={country.code}
+                    onChange={(e) => {
+                      const c = COUNTRIES.find((c) => c.code === e.target.value)
+                      if (c) setCountry(c)
+                    }}
+                    className="appearance-none h-full border border-gray-200 rounded-xl pl-3 pr-8 py-3 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer"
+                    aria-label="Country code"
+                  >
+                    {COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.flag} {c.dial}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={14}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                  />
+                </div>
+
+                {/* Phone number */}
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="912 345 6789"
+                  className="flex-1 min-w-0 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <p className="text-xs text-gray-400">
+                Selected: {country.flag} {country.name} ({country.dial})
+              </p>
 
               {error && <p className="text-sm text-red-500">{error}</p>}
 
