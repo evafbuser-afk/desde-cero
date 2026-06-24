@@ -18,8 +18,9 @@ const LangContext = createContext<LangContextType>({
   translating: false,
 })
 
+// Bump the version suffix whenever the Dict shape changes, so stale caches are ignored.
 function cacheKey(lang: string) {
-  return `dc_dict_${lang}`
+  return `dc_dict_v2_${lang}`
 }
 
 // Resolve the dictionary for a language: built-in, cached, or English (until translated).

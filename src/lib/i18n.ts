@@ -37,6 +37,31 @@ export type Dict = {
   voice_speaking: string
   voice_hint: string
   input_placeholder: string
+  dash_streak: string
+  dash_done: string
+  tab_today: string
+  tab_roadmap: string
+  tab_resume: string
+  tab_coach: string
+  dash_path_to: string
+  dash_path_forward: string
+  dash_days_complete: string
+  dash_up_next: string
+  dash_mark_complete: string
+  dash_min: string
+  dash_roadmap_title: string
+  dash_day: string
+  dash_resume_title: string
+  dash_resume_auto: string
+  dash_summary: string
+  dash_skills: string
+  dash_experience: string
+  dash_education: string
+  dash_resume_footer: string
+  coach_greeting: string
+  coach_greeting_norole: string
+  coach_placeholder: string
+  coach_error: string
 }
 
 export const T: Record<string, Dict> = {
@@ -91,6 +116,31 @@ export const T: Record<string, Dict> = {
     voice_speaking: 'Coach is speaking...',
     voice_hint: 'Voice mode — tap the mic to speak',
     input_placeholder: 'Type your message...',
+    dash_streak: '{n} day streak',
+    dash_done: '{done}/{total} done',
+    tab_today: 'Today',
+    tab_roadmap: 'Roadmap',
+    tab_resume: 'Resume',
+    tab_coach: 'Coach',
+    dash_path_to: 'Your path to {role}',
+    dash_path_forward: 'Your path forward',
+    dash_days_complete: '{done} of {total} days complete',
+    dash_up_next: 'Day {day} · Up next',
+    dash_mark_complete: 'Mark complete',
+    dash_min: 'min',
+    dash_roadmap_title: 'Your 30-day roadmap',
+    dash_day: 'Day {day}',
+    dash_resume_title: 'Your resume',
+    dash_resume_auto: 'Auto-updated as you learn',
+    dash_summary: 'Summary',
+    dash_skills: 'Skills',
+    dash_experience: 'Experience & Strengths',
+    dash_education: 'Education',
+    dash_resume_footer: 'Complete more days to add skills to your resume automatically.',
+    coach_greeting: "Hi! I'm your career coach. You're working toward becoming a {role}. What questions do you have? I'm here to help with job prep, skill advice, motivation — anything.",
+    coach_greeting_norole: "Hi! I'm your career coach. What can I help you with today?",
+    coach_placeholder: 'Ask your career coach...',
+    coach_error: "Sorry, I couldn't respond. Try again?",
   },
   es: {
     nav_signin: 'Iniciar sesión',
@@ -143,6 +193,31 @@ export const T: Record<string, Dict> = {
     voice_speaking: 'El coach está hablando...',
     voice_hint: 'Modo de voz — toca el micrófono para hablar',
     input_placeholder: 'Escribe tu mensaje...',
+    dash_streak: '{n} días seguidos',
+    dash_done: '{done}/{total} hechos',
+    tab_today: 'Hoy',
+    tab_roadmap: 'Plan',
+    tab_resume: 'Currículum',
+    tab_coach: 'Coach',
+    dash_path_to: 'Tu camino a {role}',
+    dash_path_forward: 'Tu camino hacia adelante',
+    dash_days_complete: '{done} de {total} días completados',
+    dash_up_next: 'Día {day} · Siguiente',
+    dash_mark_complete: 'Marcar como hecho',
+    dash_min: 'min',
+    dash_roadmap_title: 'Tu plan de 30 días',
+    dash_day: 'Día {day}',
+    dash_resume_title: 'Tu currículum',
+    dash_resume_auto: 'Se actualiza a medida que aprendes',
+    dash_summary: 'Resumen',
+    dash_skills: 'Habilidades',
+    dash_experience: 'Experiencia y fortalezas',
+    dash_education: 'Educación',
+    dash_resume_footer: 'Completa más días para agregar habilidades a tu currículum automáticamente.',
+    coach_greeting: '¡Hola! Soy tu coach de carrera. Estás trabajando para convertirte en {role}. ¿Qué preguntas tienes? Estoy aquí para ayudarte con la preparación para el trabajo, consejos de habilidades, motivación — lo que sea.',
+    coach_greeting_norole: '¡Hola! Soy tu coach de carrera. ¿En qué puedo ayudarte hoy?',
+    coach_placeholder: 'Pregúntale a tu coach...',
+    coach_error: 'Lo siento, no pude responder. ¿Intentar de nuevo?',
   },
   tl: {
     nav_signin: 'Mag-sign in',
@@ -195,6 +270,31 @@ export const T: Record<string, Dict> = {
     voice_speaking: 'Nagsasalita ang AI...',
     voice_hint: 'Mode ng boses — i-tap ang mikropono para magsalita',
     input_placeholder: 'I-type ang iyong mensahe...',
+    dash_streak: '{n} araw na sunod-sunod',
+    dash_done: '{done}/{total} tapos',
+    tab_today: 'Ngayon',
+    tab_roadmap: 'Plano',
+    tab_resume: 'Resume',
+    tab_coach: 'Coach',
+    dash_path_to: 'Ang iyong landas patungong {role}',
+    dash_path_forward: 'Ang iyong landas pasulong',
+    dash_days_complete: '{done} sa {total} araw na tapos',
+    dash_up_next: 'Araw {day} · Susunod',
+    dash_mark_complete: 'Markahan bilang tapos',
+    dash_min: 'min',
+    dash_roadmap_title: 'Ang iyong 30-araw na plano',
+    dash_day: 'Araw {day}',
+    dash_resume_title: 'Ang iyong resume',
+    dash_resume_auto: 'Awtomatikong ina-update habang natututo ka',
+    dash_summary: 'Buod',
+    dash_skills: 'Kasanayan',
+    dash_experience: 'Karanasan at Lakas',
+    dash_education: 'Edukasyon',
+    dash_resume_footer: 'Tapusin ang mas maraming araw para awtomatikong madagdagan ang kasanayan sa iyong resume.',
+    coach_greeting: 'Kumusta! Ako ang iyong career coach. Pinagsisikapan mong maging {role}. Anong mga tanong mayroon ka? Narito ako para tumulong sa paghahanda sa trabaho, payo sa kasanayan, motibasyon — kahit ano.',
+    coach_greeting_norole: 'Kumusta! Ako ang iyong career coach. Paano kita matutulungan ngayon?',
+    coach_placeholder: 'Magtanong sa iyong coach...',
+    coach_error: 'Paumanhin, hindi ako makasagot. Subukan muli?',
   },
 }
 

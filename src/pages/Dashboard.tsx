@@ -1,14 +1,23 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Logo } from '../components/Logo'
+import { LangSwitcher } from '../components/LangSwitcher'
+import { useLang } from '../lib/lang'
+import type { Dict } from '../lib/i18n'
 import type { ProfileData, RoadmapDay, ResumeData } from '../lib/supabase'
 import type { Message } from '../lib/claude'
 import { CheckCircle2, Circle, Flame, Target, FileText, MessageCircle, ChevronRight, Send, Loader2 } from 'lucide-react'
 
 type Tab = 'today' | 'roadmap' | 'resume' | 'coach'
 
+// Replace {placeholders} in a template string.
+function fill(template: string, vars: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ''))
+}
+
 export function Dashboard() {
   const navigate = useNavigate()
+  const { lang, t } = useLang()
   const [tab, setTab] = useState<Tab>('today')
   const [profile, setProfile] = useState<ProfileData | null>(null)
   const [roadmap, setRoadmap] = useState<RoadmapDay[]>([])
@@ -54,10 +63,10 @@ export function Dashboard() {
   }
 
   const tabs = [
-    { id: 'today' as Tab, label: "Today", icon: Target },
-    { id: 'roadmap' as Tab, label: 'Roadmap', icon: ChevronRight },
-    { id: 'resume' as Tab, label: 'Resume', icon: FileText },
-    { id: 'coach' as Tab, label: 'Coach', icon: MessageCircle },
+    { id: 'today' as Tab, label: t.tab_today, icon: Target },
+    { id: 'roadmap' as Tab, label: t.tab_roadmap, icon: ChevronRight },
+    { id: 'resume' as Tab, label: t.tab_resume, icon: FileText },
+    { id: 'coach' as Tab, label: t.tab_coach, icon: MessageCircle },
   ]
 
   return (
@@ -69,11 +78,12 @@ export function Dashboard() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5 text-sm font-medium text-orange-500">
               <Flame size={16} />
-              {streak} day streak
+              {fill(t.dash_streak, { n: streak })}
             </div>
             <div className="text-sm text-gray-400">
-              {completedCount}/{roadmap.length} done
+              {fill(t.dash_done, { done: completedCount, total: roadmap.length })}
             </div>
+            <LangSwitcher />
           </div>
         </div>
       </header>
@@ -104,10 +114,10 @@ export function Dashboard() {
           <div className="space-y-4">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">
-                {profile?.target_role ? `Your path to ${profile.target_role}` : "Your path forward"}
+                {profile?.target_role ? fill(t.dash_path_to, { role: profile.target_role }) : t.dash_path_forward}
               </h2>
               <p className="text-sm text-gray-500 mt-0.5">
-                {completedCount} of {roadmap.length} days complete
+                {fill(t.dash_days_complete, { done: completedCount, total: roadmap.length })}
               </p>
             </div>
 
@@ -124,7 +134,7 @@ export function Dashboard() {
               <div className="bg-teal-50 px-6 py-4 border-b border-teal-100">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-teal-700 uppercase tracking-wide">
-                    Day {todayTask.day} · Up next
+                    {fill(t.dash_up_next, { day: todayTask.day })}
                   </span>
                   <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${typeColors[todayTask.type]}`}>
                     {todayTask.type}
@@ -135,12 +145,12 @@ export function Dashboard() {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">{todayTask.topic}</h3>
                 <p className="text-gray-500 mb-6">{todayTask.description}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">⏱ {todayTask.duration_minutes} min</span>
+                  <span className="text-sm text-gray-400">⏱ {todayTask.duration_minutes} {t.dash_min}</span>
                   <button
                     onClick={() => toggleDay(todayTask.day)}
                     className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors"
                   >
-                    Mark complete
+                    {t.dash_mark_complete}
                   </button>
                 </div>
               </div>
@@ -154,7 +164,7 @@ export function Dashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-800 text-sm truncate">{day.topic}</p>
-                  <p className="text-xs text-gray-400">{day.skill_category} · {day.duration_minutes} min</p>
+                  <p className="text-xs text-gray-400">{day.skill_category} · {day.duration_minutes} {t.dash_min}</p>
                 </div>
                 <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${typeColors[day.type]}`}>
                   {day.type}
@@ -166,7 +176,7 @@ export function Dashboard() {
 
         {tab === 'roadmap' && (
           <div className="space-y-2">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Your 30-day roadmap</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.dash_roadmap_title}</h2>
             {roadmap.map((day) => (
               <div
                 key={day.day}
@@ -183,7 +193,7 @@ export function Dashboard() {
                 </button>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-xs text-gray-400 font-medium">Day {day.day}</span>
+                    <span className="text-xs text-gray-400 font-medium">{fill(t.dash_day, { day: day.day })}</span>
                     <span className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${typeColors[day.type]}`}>
                       {day.type}
                     </span>
@@ -191,7 +201,7 @@ export function Dashboard() {
                   <p className={`font-medium text-sm ${day.completed ? 'line-through text-gray-400' : 'text-gray-800'}`}>
                     {day.topic}
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">{day.skill_category} · {day.duration_minutes} min</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{day.skill_category} · {day.duration_minutes} {t.dash_min}</p>
                 </div>
               </div>
             ))}
@@ -201,9 +211,9 @@ export function Dashboard() {
         {tab === 'resume' && resume && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Your resume</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t.dash_resume_title}</h2>
               <span className="text-xs text-lime-700 font-medium bg-lime-50 px-3 py-1 rounded-full border border-lime-200">
-                Auto-updated as you learn
+                {t.dash_resume_auto}
               </span>
             </div>
 
@@ -213,12 +223,12 @@ export function Dashboard() {
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Summary</h3>
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{t.dash_summary}</h3>
                 <p className="text-sm text-gray-700 leading-relaxed">{resume.summary}</p>
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Skills</h3>
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{t.dash_skills}</h3>
                 <div className="flex flex-wrap gap-2">
                   {resume.skills.map((skill) => (
                     <span
@@ -232,7 +242,7 @@ export function Dashboard() {
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Experience & Strengths</h3>
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{t.dash_experience}</h3>
                 <ul className="space-y-1.5">
                   {resume.experience.map((item, i) => (
                     <li key={i} className="text-sm text-gray-700 flex gap-2">
@@ -244,32 +254,38 @@ export function Dashboard() {
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Education</h3>
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{t.dash_education}</h3>
                 <p className="text-sm text-gray-700">{resume.education}</p>
               </div>
             </div>
 
-            <p className="text-xs text-center text-gray-400">
-              Complete more days to add skills to your resume automatically.
-            </p>
+            <p className="text-xs text-center text-gray-400">{t.dash_resume_footer}</p>
           </div>
         )}
 
         {tab === 'coach' && (
-          <CoachTab profile={profile} />
+          <CoachTab profile={profile} lang={lang} t={t} />
         )}
       </div>
     </div>
   )
 }
 
-function CoachTab({ profile }: { profile: ProfileData | null }) {
+function CoachTab({
+  profile,
+  lang,
+  t,
+}: {
+  profile: ProfileData | null
+  lang: string
+  t: Dict
+}) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: profile
-        ? `Hi! I'm your career coach. You're working toward becoming a ${profile.target_role}. What questions do you have? I'm here to help with job prep, skill advice, motivation — anything.`
-        : "Hi! I'm your career coach. What can I help you with today?",
+      content: profile?.target_role
+        ? fill(t.coach_greeting, { role: profile.target_role })
+        : t.coach_greeting_norole,
     },
   ])
   const [input, setInput] = useState('')
@@ -293,10 +309,10 @@ function CoachTab({ profile }: { profile: ProfileData | null }) {
     setLoading(true)
 
     try {
-      const reply = await askCareerCoach(newMessages, profile ?? {} as ProfileData)
+      const reply = await askCareerCoach(newMessages, profile ?? {} as ProfileData, lang)
       setMessages([...newMessages, { role: 'assistant', content: reply }])
     } catch {
-      setMessages([...newMessages, { role: 'assistant', content: "Sorry, I couldn't respond. Try again?" }])
+      setMessages([...newMessages, { role: 'assistant', content: t.coach_error }])
     } finally {
       setLoading(false)
     }
@@ -339,7 +355,7 @@ function CoachTab({ profile }: { profile: ProfileData | null }) {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask your career coach..."
+          placeholder={t.coach_placeholder}
           disabled={loading}
           className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50"
         />
