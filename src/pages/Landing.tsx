@@ -12,7 +12,7 @@ export function Landing() {
   const { t } = useLang()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-sky-50">
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
         <Logo size="md" />
@@ -50,7 +50,7 @@ export function Landing() {
       </section>
 
       {/* Storyboard — how it works */}
-      <div className="bg-gray-50 border-y border-gray-100">
+      <div className="border-y border-gray-100">
         <Storyboard />
       </div>
 
@@ -62,7 +62,7 @@ export function Landing() {
             return (
               <div
                 key={f.title}
-                className="flex gap-4 p-6 rounded-2xl border border-gray-100 bg-gray-50 hover:border-teal-200 transition-colors"
+                className="flex gap-4 p-6 rounded-2xl border border-gray-100 bg-white hover:border-teal-200 transition-colors"
               >
                 <div className="w-10 h-10 rounded-xl bg-lime-100 flex items-center justify-center shrink-0">
                   <Icon size={20} className="text-lime-600" />
