@@ -2,10 +2,14 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Logo } from '../components/Logo'
 import { sendMagicLink } from '../lib/auth'
+import { useLang } from '../lib/lang'
+import { T } from '../lib/i18n'
 import { ArrowLeft, Mail, MailCheck } from 'lucide-react'
 
 export function Auth() {
   const navigate = useNavigate()
+  const { lang } = useLang()
+  const t = T[lang]
   const [step, setStep] = useState<'email' | 'sent'>('email')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -29,7 +33,7 @@ export function Auth() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Logo size="lg" />
-          <p className="text-gray-500 mt-2">Your journey starts with a single step</p>
+          <p className="text-gray-500 mt-2">{t.auth_tagline}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
@@ -40,8 +44,8 @@ export function Auth() {
                   <Mail size={20} className="text-teal-600" />
                 </div>
                 <div>
-                  <h2 className="font-semibold text-gray-900">Enter your email</h2>
-                  <p className="text-sm text-gray-500">We'll email you a sign-in link</p>
+                  <h2 className="font-semibold text-gray-900">{t.auth_email_title}</h2>
+                  <p className="text-sm text-gray-500">{t.auth_email_sub}</p>
                 </div>
               </div>
 
@@ -49,7 +53,7 @@ export function Auth() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t.auth_email_placeholder}
                 autoComplete="email"
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 required
@@ -62,12 +66,10 @@ export function Auth() {
                 disabled={loading}
                 className="w-full bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors"
               >
-                {loading ? 'Sending...' : 'Send me a link'}
+                {loading ? t.auth_sending : t.auth_send}
               </button>
 
-              <p className="text-xs text-gray-400 text-center">
-                We'll never share your email or send spam.
-              </p>
+              <p className="text-xs text-gray-400 text-center">{t.auth_privacy}</p>
             </form>
           ) : (
             <div className="text-center space-y-4">
@@ -75,24 +77,23 @@ export function Auth() {
                 <MailCheck size={28} className="text-teal-600" />
               </div>
               <div>
-                <h2 className="font-semibold text-gray-900 text-lg">Check your email</h2>
+                <h2 className="font-semibold text-gray-900 text-lg">{t.auth_sent_title}</h2>
                 <p className="text-sm text-gray-500 mt-1">
-                  We sent a sign-in link to <span className="font-medium text-gray-700">{email}</span>.
-                  Open it on this device and you'll be signed in automatically.
+                  {t.auth_sent_body.split('{email}')[0]}
+                  <span className="font-medium text-gray-700">{email}</span>
+                  {t.auth_sent_body.split('{email}')[1]}
                 </p>
               </div>
 
               <div className="bg-gray-50 rounded-xl p-4 text-left">
-                <p className="text-xs text-gray-500">
-                  Don't see it? Check your spam folder, or wait a minute and try again.
-                </p>
+                <p className="text-xs text-gray-500">{t.auth_sent_spam}</p>
               </div>
 
               <button
                 onClick={() => setStep('email')}
                 className="text-sm text-teal-600 hover:text-teal-700 font-medium"
               >
-                Use a different email
+                {t.auth_different}
               </button>
             </div>
           )}
@@ -102,7 +103,7 @@ export function Auth() {
           onClick={() => navigate('/')}
           className="mt-4 text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1 mx-auto"
         >
-          <ArrowLeft size={14} /> Back to home
+          <ArrowLeft size={14} /> {t.auth_back}
         </button>
       </div>
     </div>
