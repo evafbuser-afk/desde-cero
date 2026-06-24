@@ -66,7 +66,7 @@ export function Landing() {
         >
           Start for free — no account needed
         </button>
-        <p className="text-sm text-gray-400 mt-3">Just your phone number to get started</p>
+        <p className="text-sm text-gray-400 mt-3">Just your email to get started</p>
       </section>
 
       {/* Storyboard — how it works */}

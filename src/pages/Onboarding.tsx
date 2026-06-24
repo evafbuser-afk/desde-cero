@@ -157,7 +157,7 @@ export function Onboarding() {
       if (user) {
         await supabase.from('user_profiles').upsert({
           id: user.id,
-          phone: user.phone,
+          email: user.email,
           onboarding_complete: true,
           profile_data: profile,
           roadmap,

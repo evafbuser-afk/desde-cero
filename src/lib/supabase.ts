@@ -7,7 +7,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export type UserProfile = {
   id: string
-  phone: string
+  email: string
   name: string | null
   onboarding_complete: boolean
   profile_data: ProfileData | null

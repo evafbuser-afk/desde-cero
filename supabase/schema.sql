@@ -7,7 +7,7 @@ create extension if not exists "uuid-ossp";
 -- User profiles table
 create table if not exists public.user_profiles (
   id          uuid primary key references auth.users(id) on delete cascade,
-  phone       text,
+  email       text,
   name        text,
   onboarding_complete boolean default false,
   profile_data        jsonb,
